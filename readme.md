@@ -4,6 +4,8 @@
 
 ## Using MessageAPI
 
+Don't forget to replace `VERSION` with the latest version!
+
 Gradle:
 ```
 repositories {
