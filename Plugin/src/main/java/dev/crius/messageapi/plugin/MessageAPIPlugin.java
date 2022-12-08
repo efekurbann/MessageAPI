@@ -35,6 +35,7 @@ public final class MessageAPIPlugin extends JavaPlugin {
         // this will be called asynchronously.
         objectChannel.listen(message -> getLogger().info(message.message));
 
+        // we must call this method after setting everything up otherwise your listeners will not function
         this.api.addChannel(objectChannel);
 
         // since we subscribe to channels asynchronously, we will wait for a while to send a message.
