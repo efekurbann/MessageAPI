@@ -1,0 +1,6 @@
+name: MessageAPI
+version: '${version}'
+main: dev.crius.messageapi.plugin.MessageAPIPlugin
+api-version: 1.13
+authors: [ CriusDevelopment, hyperion ]
+website: https://crius.dev

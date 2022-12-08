@@ -1,0 +1,4 @@
+redis:
+  host: "host"
+  password: "password"
+  port: 18273
