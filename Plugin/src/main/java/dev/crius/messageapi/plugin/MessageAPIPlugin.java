@@ -23,25 +23,26 @@ public final class MessageAPIPlugin extends JavaPlugin {
                 18273
         );*/
 
-        JedisCredentials credentials = new JedisCredentials(
-                this.getConfig().getConfigurationSection("redis")
-        );
+        JedisCredentials credentials = new JedisCredentials(Objects.requireNonNull(this.getConfig().getConfigurationSection("redis")));
 
+        // you can disable messages such as "subscribed" etc. by disabling debug mode.
         this.api = new MessageAPI(this, true, credentials);
 
-        Channel<TestObject> objectChannel = new Channel<>(api,
-                "ObjectListener", TestObject.class);
+        // it is highly suggested to save this object for later, creating a new channel object may lead to problems
+        Channel<TestObject> objectChannel = new Channel<>(api, "ObjectListener", TestObject.class);
 
+        // set a callback to use when there is a new message
+        // this will be called asynchronously.
         objectChannel.listen(message -> getLogger().info(message.message));
 
         this.api.addChannel(objectChannel);
 
-        Bukkit.getScheduler().runTaskLater(this, () ->
-                objectChannel.sendMessage(new TestObject("test")), 5);
+        // since we subscribe to channels asynchronously, we will wait for a while to send a message.
+        Bukkit.getScheduler().runTaskLater(this, () -> objectChannel.sendMessage(new TestObject("test")), 5);
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        // no need to call the close method since it will be closed automatically
     }
 }
