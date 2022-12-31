@@ -60,8 +60,6 @@ shadowJar {
 
     archiveFileName = "${archiveBaseName.get()} v${archiveVersion.get()}.jar"
 
-    relocate 'redis.clients.jedis', 'dev.crius.messageapi.thirdparty.jedis'
-
     from sourceSets.getByName("main").output
     configurations = [project.configurations.getByName("runtimeClasspath")]
 
