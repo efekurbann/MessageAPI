@@ -38,34 +38,24 @@ public class MessageAPI {
         config.setMaxTotal(16);
 
         if (!credentials.getPassword().trim().isEmpty()) {
-            this.pool = new JedisPool(config, credentials.getIp(),
-                    credentials.getPort(), 2000, credentials.getPassword());
+            this.pool = new JedisPool(config, credentials.getIp(), credentials.getPort(), 2000, credentials.getPassword());
         } else {
-            this.pool = new JedisPool(config, credentials.getIp(),
-                    credentials.getPort(), 2000);
+            this.pool = new JedisPool(config, credentials.getIp(), credentials.getPort(), 2000);
         }
 
-        try (Jedis jedis = this.pool.getResource()) {
-            jedis.ping();
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+            try (Jedis jedis = this.pool.getResource()) {
+                jedis.subscribe(this.listener, "messageapi".getBytes(StandardCharsets.UTF_8));
+            }
+        });
 
         new BukkitRunnable() {
             @Override
             public void run() {
-                if (!listener.isSubscribed()) {
-                    this.cancel();
-                    return;
-                }
-
-                if (pool.isClosed()) {
-                    this.cancel();
-                    return;
-                }
+                if (!listener.isSubscribed()) return;
 
                 for (String channel : channelMap.keySet()) {
-                    try (Jedis jedis = pool.getResource()) {
-                        jedis.subscribe(listener, channel.getBytes(StandardCharsets.UTF_8));
-                    }
+                    listener.subscribe(channel.getBytes(StandardCharsets.UTF_8));
                 }
             }
         }.runTaskTimerAsynchronously(plugin, 2, 2);
@@ -97,11 +87,6 @@ public class MessageAPI {
 
     public void addChannel(Channel<?> channel) {
         this.channelMap.put(channel.getName(), channel);
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            try (Jedis jedis = this.pool.getResource()) {
-                jedis.subscribe(listener, channel.getName().getBytes(StandardCharsets.UTF_8));
-            }
-        });
     }
 
 }
