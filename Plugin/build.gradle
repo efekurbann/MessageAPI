@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'dev.crius'
-version '1.0.0'
+version '1.0.1'
 
 repositories {
     mavenCentral()
@@ -25,8 +25,6 @@ processResources {
 
 shadowJar {
     dependsOn(jar)
-
-    relocate 'redis.clients.jedis', 'dev.crius.messageapi.thirdparty.jedis'
 
     from sourceSets.getByName("main").output
     configurations = [project.configurations.getByName("runtimeClasspath")]
