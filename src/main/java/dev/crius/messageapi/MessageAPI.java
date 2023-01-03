@@ -79,4 +79,11 @@ public class MessageAPI {
         this.channelMap.put(channel.getName(), channel);
     }
 
+    public <T> Channel<T> getChannel(String name, Class<T> clazz) {
+        Channel<?> channel = this.channelMap.get(name);
+        if (channel.getClazz() != clazz) return null;
+
+        return (Channel<T>) channel;
+    }
+
 }

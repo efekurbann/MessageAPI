@@ -3,8 +3,6 @@ plugins {
     id 'com.github.johnrengelman.shadow'
 }
 
-group 'velocity'
-
 repositories {
     mavenCentral()
     maven { url 'https://repo.papermc.io/repository/maven-public/' }

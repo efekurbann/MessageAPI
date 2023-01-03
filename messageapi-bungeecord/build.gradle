@@ -3,8 +3,6 @@ plugins {
     id 'com.github.johnrengelman.shadow'
 }
 
-group 'bungeecord'
-
 repositories {
     mavenCentral()
     maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
