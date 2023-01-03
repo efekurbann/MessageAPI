@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow'
+}
+
+group 'bungeecord'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+}
+
+dependencies {
+    implementation parent
+    compileOnly("net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT")
+}
+
+shadowJar {
+    dependsOn(jar)
+
+    from sourceSets.getByName("main").output
+    configurations = [project.configurations.getByName("runtimeClasspath")]
+
+    archiveFileName = "MessageAPI-Bungeecord.jar"
+    destinationDirectory = file("../archive/")
+}

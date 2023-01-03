@@ -3,13 +3,9 @@ package dev.crius.messageapi;
 import dev.crius.messageapi.channel.Channel;
 import dev.crius.messageapi.credentials.JedisCredentials;
 import dev.crius.messageapi.listener.PubSubListener;
+import dev.crius.messageapi.logger.Logger;
+import dev.crius.messageapi.scheduler.Scheduler;
 import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginDisableEvent;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -17,22 +13,24 @@ import redis.clients.jedis.JedisPoolConfig;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
 
 public class MessageAPI {
 
+    @Getter private static MessageAPI instance;
+
     private final Map<String, Channel<?>> channelMap = new ConcurrentHashMap<>();
-    @Getter private final JavaPlugin plugin;
     @Getter private final Logger logger;
     @Getter private final boolean debug;
     @Getter private final JedisPool pool;
     private final PubSubListener listener;
 
-    public MessageAPI(JavaPlugin plugin, boolean debug, JedisCredentials credentials) {
-        this.plugin = plugin;
-        this.logger = plugin.getLogger();
+    @Getter private final Scheduler scheduler;
+
+    public MessageAPI(boolean debug, JedisCredentials credentials, Scheduler scheduler, Logger logger) {
         this.debug = debug;
         this.listener = new PubSubListener(this);
+        this.scheduler = scheduler;
+        this.logger = logger;
 
         JedisPoolConfig config = new JedisPoolConfig();
         config.setMaxTotal(16);
@@ -43,29 +41,21 @@ public class MessageAPI {
             this.pool = new JedisPool(config, credentials.getIp(), credentials.getPort(), 2000);
         }
 
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+        scheduler.runAsync(() -> {
             try (Jedis jedis = this.pool.getResource()) {
                 jedis.subscribe(this.listener, "messageapi".getBytes(StandardCharsets.UTF_8));
             }
         });
 
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (!listener.isSubscribed()) return;
+        scheduler.runAsyncTimer(() -> {
+            if (!listener.isSubscribed()) return;
 
-                for (String channel : channelMap.keySet()) {
-                    listener.subscribe(channel.getBytes(StandardCharsets.UTF_8));
-                }
+            for (String channel : channelMap.keySet()) {
+                listener.subscribe(channel.getBytes(StandardCharsets.UTF_8));
             }
-        }.runTaskTimerAsynchronously(plugin, 2, 2);
+        }, 2, 2);
 
-        Bukkit.getServer().getPluginManager().registerEvents(new Listener() {
-            @EventHandler
-            public void onDisable(PluginDisableEvent event) {
-                if (plugin == event.getPlugin()) close();
-            }
-        }, plugin);
+        instance = this;
     }
 
     public void close() {

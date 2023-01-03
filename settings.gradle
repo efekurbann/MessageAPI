@@ -1,3 +1,6 @@
 rootProject.name = 'MessageAPI'
-include 'Plugin'
+include 'messageapi-bukkit'
+include 'messageapi-bungeecord'
+include 'messageapi-velocity'
+include 'messageapi-sponge'
 

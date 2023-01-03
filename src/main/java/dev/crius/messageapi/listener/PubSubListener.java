@@ -44,7 +44,7 @@ public class PubSubListener extends BinaryJedisPubSub {
     @Override
     public void onSubscribe(byte[] channel, int subscribedChannels) {
         if (api.isDebug())
-            api.getLogger().info("Successfully subscribed to channel: " +
+            api.getLogger().log("Successfully subscribed to channel: " +
                     new String(channel, StandardCharsets.UTF_8));
     }
 
@@ -52,7 +52,7 @@ public class PubSubListener extends BinaryJedisPubSub {
     public void onUnsubscribe(byte[] channel, int subscribedChannels) {
         String channelName = new String(channel, StandardCharsets.UTF_8);
         if (api.isDebug())
-            api.getLogger().info("Successfully unsubscribed from channel: "
+            api.getLogger().log("Successfully unsubscribed from channel: "
                     + channelName);
         this.subscribed.remove(channelName);
     }

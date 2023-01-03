@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow'
+}
+
+group 'velocity'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://repo.papermc.io/repository/maven-public/' }
+}
+
+dependencies {
+    implementation parent
+    compileOnly("com.velocitypowered:velocity-api:3.1.1")
+}
+
+shadowJar {
+    dependsOn(jar)
+
+    from sourceSets.getByName("main").output
+    configurations = [project.configurations.getByName("runtimeClasspath")]
+
+    archiveFileName = "MessageAPI-Velocity.jar"
+    destinationDirectory = file("../archive/")
+}

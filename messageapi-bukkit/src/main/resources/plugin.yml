@@ -1,0 +1,6 @@
+name: "MessageAPIPlugin"
+main: "dev.crius.messageapi.bukkit.plugin.MessageAPIPlugin"
+version: '${version}'
+api-version: 1.13
+authors: [ CriusDevelopment, hyperion ]
+website: https://crius.dev

@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow'
+}
+
+group 'sponge'
+
+compileJava.options.encoding = 'UTF-8'
+
+repositories {
+    jcenter()
+    maven {
+        name = 'sponge-repo'
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+    }
+}
+
+dependencies {
+    implementation parent
+    compileOnly 'org.spongepowered:spongeapi:8.0.0'
+}
+
+shadowJar {
+    dependsOn(jar)
+
+    from sourceSets.getByName("main").output
+    configurations = [project.configurations.getByName("runtimeClasspath")]
+
+    archiveFileName = "MessageAPI-Sponge.jar"
+    destinationDirectory = file("../archive/")
+}

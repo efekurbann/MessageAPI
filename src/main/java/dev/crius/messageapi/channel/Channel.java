@@ -6,7 +6,6 @@ import dev.crius.messageapi.MessageAPI;
 import dev.crius.messageapi.channel.listener.ChannelListener;
 import dev.crius.messageapi.codec.GsonCodec;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import redis.clients.jedis.Jedis;
 
 import java.nio.charset.StandardCharsets;
@@ -25,10 +24,12 @@ public class Channel<T> {
         this.name = name;
         this.codec = new GsonCodec<>(new Gson(), TypeToken.get(clazz));
         this.clazz = clazz;
+
+        api.addChannel(this);
     }
 
     public void sendMessage(T object) {
-        Bukkit.getScheduler().runTaskAsynchronously(api.getPlugin(), () -> {
+        api.getScheduler().runAsync(() -> {
             try (Jedis jedis = api.getPool().getResource()) {
                 jedis.publish(name.getBytes(StandardCharsets.UTF_8), codec.encode(object));
             }
@@ -42,8 +43,7 @@ public class Channel<T> {
     public void onMessage(T message) {
         if (this.listener == null) return;
 
-        Bukkit.getScheduler().runTaskAsynchronously(api.getPlugin(),
-                () -> listener.onMessage(message));
+        api.getScheduler().runAsync(() -> listener.onMessage(message));
     }
 
     public void onMessage(byte[] message) {

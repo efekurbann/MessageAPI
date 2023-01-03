@@ -1,0 +1,5 @@
+credentials:
+  debug: true
+  host: "host"
+  password: "password"
+  port: 1234
