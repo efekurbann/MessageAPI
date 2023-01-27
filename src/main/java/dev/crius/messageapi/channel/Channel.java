@@ -36,6 +36,16 @@ public class Channel<T> {
         });
     }
 
+    /**
+     * Not recommended but may be useful in some cases where you can't use async.
+     * @param object object
+     */
+    public void sendMessageSync(T object) {
+        try (Jedis jedis = api.getPool().getResource()) {
+            jedis.publish(name.getBytes(StandardCharsets.UTF_8), codec.encode(object));
+        }
+    }
+
     public void listen(ChannelListener<T> listener) {
         this.listener = listener;
     }
