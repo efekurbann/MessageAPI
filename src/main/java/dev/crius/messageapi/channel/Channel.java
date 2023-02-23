@@ -53,7 +53,7 @@ public class Channel<T> {
     public void onMessage(T message) {
         if (this.listener == null) return;
 
-        api.getScheduler().runAsync(() -> listener.onMessage(message));
+        listener.onMessage(message);
     }
 
     public void onMessage(byte[] message) {
