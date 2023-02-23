@@ -7,7 +7,7 @@
 Don't forget to replace `VERSION` and `PLATFORM`!
 <br>
 For example:
-- `VERSION` to `2.0.0` (currently the latest version)
+- `VERSION` to `2.0.1` (currently the latest version)
 - `PLATFORM` to `messageapi-bukkit` (or any other module name)
 
 Gradle:
