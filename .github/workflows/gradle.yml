@@ -36,4 +36,24 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Package
-        path: output
+        path: build/libs/MessageAPI.jar
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: Package
+        path: archive/MessageAPI-Bukkit.jar
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: Package
+        path: archive/MessageAPI-Bungeecord.jar
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: Package
+        path: archive/MessageAPI-Sponge.jar
+    - name: 'Upload Artifact'
+      uses: actions/upload-artifact@v3
+      with:
+        name: Package
+        path: archive/MessageAPI-Velocity.jar
